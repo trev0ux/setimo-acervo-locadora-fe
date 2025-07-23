@@ -7,6 +7,7 @@
       v-if="props.poster"
       :src="currentPoster"
       :alt="title"
+      data-testid="movie-poster"
       custom-classes="140"
       height="162"
       class="absolute top-4 left-4 rounded-lg cover w-[120px] h-[142px]"
@@ -26,7 +27,7 @@ interface Props {
   title: string;
   year: string;
   poster: string;
-  customClasses: string;
+  customClasses?: string;
 }
 
 const props = defineProps<Props>();

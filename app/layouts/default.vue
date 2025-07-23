@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AppHeader />
+    <OrganismsAppHeader />
     <slot />
   </div>
 </template>

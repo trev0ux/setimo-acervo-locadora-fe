@@ -6,13 +6,13 @@
     </h2>
     <div class="flex justify-between items-center flex-wrap gap-6">
       <div class="max-w-[420px] w-full">
-        <ElementsSearchField @search-term="searchTerm" />
+        <MoleculesSearchField @search-term="searchTerm" />
       </div>
-      <ElementsFilter />
+      <MoleculesFilter />
     </div>
     <article class="flex flex-wrap gap-6 mt-16">
-      <MovieItem
-        v-for="(movie, index) in movies"
+      <OrganismsMovieItem
+        v-for="movie in movies"
         :key="movie?.Title"
         :title="movie?.Title"
         :year="movie?.Year"
