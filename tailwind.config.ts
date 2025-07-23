@@ -33,7 +33,10 @@ export default <Config>{
           primary: "#E11A38",
           black: "#171B24",
           light: "#282A2C",
-          lightBlack: "#202632",
+          "light-black": "#202632",
+          white: "#ffffff",
+          border: "#4C4E53",
+          grey: "#979797",
         },
       },
       fontFamily: {
