@@ -4,7 +4,7 @@
       class="max-w-[520px] mx-auto gap-4 flex flex-col"
       @submit.prevent="handleSubmit"
     >
-      <h2 class="text-aux-white font-bold text-3xl">Adicionar cliente</h2>
+      <h2 class="text-aux-white font-bold text-3xl">Editar usuário</h2>
       <MoleculesInputField
         v-model="form.name"
         label="Nome"
@@ -12,64 +12,30 @@
         required
       />
       <MoleculesInputField
-        v-model="form.surname"
-        label="Sobrenome"
-        placeholder="Sobrenome"
-        required
-      />
-      <MoleculesInputField
-        v-model="form.email"
-        label="Email"
-        placeholder="Email"
-        required
-      />
-      <MoleculesInputField
-        v-model="form.cpf"
+        v-model="form.document"
         label="CPF"
         placeholder="CPF"
         required
       />
       <MoleculesInputField
-        v-model="form.phoneNumber"
-        label="Telefone"
-        placeholder="Telefone"
+        v-model="form.password"
+        label="Senha"
+        type="password"
+        placeholder="Senha"
         required
       />
-      <div>
-        <MoleculesInputField
-          v-model="form.zipCode"
-          label="CEP"
-          placeholder="00000-000"
-          required
-          @blur="fetchAddress"
-        />
-        <span v-if="loading" class="text-aux-white text-sm">Buscando...</span>
-        <span v-if="error" class="text-aux-primary text-sm">{{ error }}</span>
-      </div>
       <MoleculesInputField
-        v-model="form.street"
-        label="Rua"
-        placeholder="Rua"
-        :disabled="addressIsDisabled"
-      />
-      <MoleculesInputField
-        v-model="form.neighborhood"
-        label="Bairro"
-        :disabled="addressIsDisabled"
-        placeholder="Bairro"
-      />
-      <MoleculesInputField
-        v-model="form.city"
-        label="Cidade"
-        :disabled="addressIsDisabled"
-        placeholder="Cidade"
+        v-model="form.confirmPassword"
+        type="password"
+        label="Confirmar Senha"
+        placeholder="Confirmar Senha"
+        required
       />
       <MoleculesSelectField
-        v-model="form.state"
-        label="UF"
-        :disabled="addressIsDisabled"
-        placeholder="UF"
-        :options="BRAZILIAN_UFS"
+        v-model="form.status"
+        label="Status"
+        placeholder="Escolha um status"
+        :options="statusArr"
       />
       <div class="flex justify-end mt-4">
         <button
@@ -82,13 +48,13 @@
     </form>
   </section>
 </template>
-
 <script lang="ts" setup>
-import { BRAZILIAN_UFS } from "../../constants/states";
+import { BRAZILIAN_UFS } from "~/constants/states";
 import { useCustomers } from "~/services/customerService";
 import { generateId } from "~/utils/id";
 
-const { addCustomer } = useCustomers();
+const { customers, updateCustomer, getCustomerById } = useCustomers();
+const route = useRoute();
 
 export interface FormData {
   id: string;
@@ -121,6 +87,34 @@ const form = reactive<FormData>({
 const loading = ref(false);
 const error = ref("");
 const addressIsDisabled = ref(true);
+const customer = ref(null);
+
+const customerId = route.params.id as string;
+
+const loadCustomer = () => {
+  customer.value = getCustomerById(customerId);
+
+  if (customer.value) {
+    Object.assign(form, {
+      name: customer.value.name || "",
+      surname: customer.value.surname || "",
+      email: customer.value.email || "",
+      cpf: customer.value.cpf || "",
+      phoneNumber: customer.value.phoneNumber || "",
+      zipCode: customer.value.zipCode || "",
+      street: customer.value.street || "",
+      city: customer.value.city || "",
+      state: customer.value.state || "",
+      neighborhood: customer.value.neighborhood || "",
+    });
+  }
+
+  loading.value = false;
+};
+
+onMounted(() => {
+  loadCustomer();
+});
 
 const fetchAddress = async () => {
   const zipCode = form.zipCode.replace(/\D/g, "");
@@ -153,7 +147,11 @@ const fetchAddress = async () => {
 };
 
 const handleSubmit = () => {
-  addCustomer(form);
+  const updatedData = {
+    ...form,
+    updatedAt: new Date(),
+  };
+  const result = updateCustomer(customerId, updatedData);
   navigateTo("/customers");
 };
 </script>

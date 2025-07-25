@@ -4,7 +4,7 @@
       class="max-w-[520px] mx-auto gap-4 flex flex-col"
       @submit.prevent="handleSubmit"
     >
-      <h2 class="text-aux-white font-bold text-3xl">Adicionar cliente</h2>
+      <h2 class="text-aux-white font-bold text-3xl">Editar cliente</h2>
       <MoleculesInputField
         v-model="form.name"
         label="Nome"
@@ -84,11 +84,12 @@
 </template>
 
 <script lang="ts" setup>
-import { BRAZILIAN_UFS } from "../../constants/states";
+import { BRAZILIAN_UFS } from "~/constants/states";
 import { useCustomers } from "~/services/customerService";
 import { generateId } from "~/utils/id";
 
-const { addCustomer } = useCustomers();
+const { customers, updateCustomer, getCustomerById } = useCustomers();
+const route = useRoute();
 
 export interface FormData {
   id: string;
@@ -121,6 +122,34 @@ const form = reactive<FormData>({
 const loading = ref(false);
 const error = ref("");
 const addressIsDisabled = ref(true);
+const customer = ref(null);
+
+const customerId = route.params.id as string;
+
+const loadCustomer = () => {
+  customer.value = getCustomerById(customerId);
+
+  if (customer.value) {
+    Object.assign(form, {
+      name: customer.value.name || "",
+      surname: customer.value.surname || "",
+      email: customer.value.email || "",
+      cpf: customer.value.cpf || "",
+      phoneNumber: customer.value.phoneNumber || "",
+      zipCode: customer.value.zipCode || "",
+      street: customer.value.street || "",
+      city: customer.value.city || "",
+      state: customer.value.state || "",
+      neighborhood: customer.value.neighborhood || "",
+    });
+  }
+
+  loading.value = false;
+};
+
+onMounted(() => {
+  loadCustomer();
+});
 
 const fetchAddress = async () => {
   const zipCode = form.zipCode.replace(/\D/g, "");
@@ -153,7 +182,11 @@ const fetchAddress = async () => {
 };
 
 const handleSubmit = () => {
-  addCustomer(form);
+  const updatedData = {
+    ...form,
+    updatedAt: new Date(),
+  };
+  const result = updateCustomer(customerId, updatedData);
   navigateTo("/customers");
 };
 </script>

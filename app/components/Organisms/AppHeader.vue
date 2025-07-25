@@ -1,6 +1,6 @@
 <template>
   <header class="flex justify-between container py-6">
-    <NuxtLink class="flex gap-3 items-center" to="/">
+    <NuxtLink class="flex gap-3 items-center" to="/listing">
       <NuxtImg
         src="/images/logo.png"
         width="24"
@@ -20,12 +20,12 @@
           >
         </li>
         <li>
-          <NuxtLink to="/users" class="text-aux-white text-md"
+          <NuxtLink to="/customers" class="text-aux-white text-md"
             >Clientes</NuxtLink
           >
         </li>
         <li>
-          <NuxtLink to="/users" class="text-aux-white text-md"
+          <NuxtLink to="/film-location" class="text-aux-white text-md"
             >Locação</NuxtLink
           >
         </li>

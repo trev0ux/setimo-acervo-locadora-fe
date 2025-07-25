@@ -23,7 +23,6 @@ export const movieApi = {
   async getMovies(params: MovieParams = {}): Promise<Movie[]> {
     const config = useRuntimeConfig();
     const url = `http://www.omdbapi.com/?apikey=${config.public.apiKey}`;
-    console.log("poxa mana", params);
 
     try {
       const data = await $fetch<OMDBResponse>(url, {
@@ -49,28 +48,20 @@ export const movieApi = {
   async searchMovies(params: MovieParams = {}): Promise<Movie[]> {
     const config = useRuntimeConfig();
     const url = `http://www.omdbapi.com/?apikey=${config.public.apiKey}`;
-    console.log("poxa mana", params);
 
-    try {
-      const data = await $fetch<OMDBResponse>(url, {
-        query: {
-          s: encodeURI(params.title),
-          type: "movie",
-          page: params.page || 1,
-        },
-        server: false,
-      });
+    const data = await $fetch<OMDBResponse>(url, {
+      query: {
+        s: encodeURI(params.title),
+        type: "movie",
+        y: params.year,
+        page: params.page || 1,
+      },
+    });
 
-      if (data.Response === "False") {
-        throw new Error(data.Error || "Nenhum filme encontrado");
-      }
-
-      console.log(data);
-
-      return data.Search || [];
-    } catch (error) {
-      console.error("Erro ao buscar filmes:", error);
-      return [];
+    if (data.Response === "False") {
+      throw new Error(data.Error || "Nenhum filme encontrado");
     }
+
+    return data.Search || [];
   },
 };

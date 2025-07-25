@@ -1,11 +1,15 @@
 import { vi } from "vitest";
 import { config } from "@vue/test-utils";
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch, onMounted } from "vue";
+
+import "./mocks/movieApi.msw";
 
 global.ref = ref;
 global.reactive = reactive;
 global.computed = computed;
 global.watch = watch;
+global.onMounted = onMounted;
+global.$fetch = vi.fn();
 
 config.global.stubs = {
   NuxtLink: {
@@ -22,7 +26,7 @@ config.global.stubs = {
 };
 
 global.useRuntimeConfig = vi.fn(() => ({
-  public: { apiKey: "test-key" },
+  public: { apiKey: config },
 }));
 
 global.navigateTo = vi.fn();
